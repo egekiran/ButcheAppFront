@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../pages/register.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../pages/forget_password.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -13,6 +15,8 @@ class MyLoginPage extends StatefulWidget {
 
 class _MyLoginPageState extends State<MyLoginPage> {
   bool _obscureText = true;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -100,6 +104,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                             ),
                           ),
                           child: TextField(
+                            controller: _emailController,
                             decoration: InputDecoration(
                               contentPadding: EdgeInsets.fromLTRB(
                                 size.width * 0.02,
@@ -146,6 +151,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           child: Stack(
                             children: [
                               TextField(
+                                controller: _passwordController,
                                 obscureText: _obscureText,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.fromLTRB(
@@ -222,12 +228,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 Color(0xff39B54A)),
                           ),
                           onPressed: () {
-                            Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const HomePage()),
-                                  );
+                            loginUser(
+                              _emailController.text,
+                              _passwordController.text,
+                            );
                           },
                           child: Text(
                             'Giriş Yap',
@@ -278,4 +282,31 @@ class _MyLoginPageState extends State<MyLoginPage> {
       ),
     );
   }
+  Future<void> loginUser(String email, String password) async {
+  final url = Uri.parse('https://your-api-endpoint.com/login'); // replace with your API endpoint
+  final response = await http.post(
+    url,
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'email': email,
+      'password': password,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    // If the server returns a 200 OK response, parse the JSON.
+    final Map<String, dynamic> responseData = json.decode(response.body);
+    // Handle successful login (e.g., navigate to home page)
+    print('Login successful: ${responseData['token']}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const HomePage()),
+    );
+  } else {
+    // If the server returns an error, throw an exception.
+    print('Failed to login: ${response.body}');
+  }
+}
 }
