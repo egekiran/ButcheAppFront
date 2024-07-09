@@ -232,6 +232,12 @@ class _MyLoginPageState extends State<MyLoginPage> {
                               _emailController.text,
                               _passwordController.text,
                             );
+                            Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomePage()),
+                                  );
                           },
                           child: Text(
                             'Giriş Yap',
