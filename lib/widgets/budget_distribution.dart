@@ -58,28 +58,36 @@ class BudgetItem extends StatelessWidget {
   final String label;
   final Color color;
 
-  BudgetItem(
-      {super.key,
-      required this.icon,
-      required this.label,
-      required this.color});
+  const BudgetItem({
+    super.key,
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
         children: [
           Icon(icon, size: 28, color: color),
-          Text(
-            label,
-            style: TextStyle(fontSize: 16),
-          ),
+          const SizedBox(width: 16),
           Expanded(
-            child: LinearProgressIndicator(
-              value: 0.6,
-              color: color,
-              backgroundColor: color.withOpacity(0.2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                LinearProgressIndicator(
+                  value: 0.6,
+                  color: color,
+                  backgroundColor: color.withOpacity(0.2),
+                ),
+              ],
             ),
           ),
         ],
