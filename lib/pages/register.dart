@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../pages/login_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const RegisterPage());
@@ -40,9 +43,11 @@ class MyRegisterPage extends StatefulWidget {
 class _MyRegisterPageState extends State<MyRegisterPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final TextEditingController _dobController = TextEditingController();
 
   bool _isLengthValid = false;
@@ -52,9 +57,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
-  /*var scaleWidth = 0 ;
-  var scaleHeight= 0 ;
-  var AverageScale = 0;*/
   void _validatePassword(String password) {
     setState(() {
       _isLengthValid = password.length >= 8;
@@ -78,7 +80,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       initialDate: DateTime(2000),
       firstDate: DateTime(1900),
       lastDate: DateTime(2100),
-      locale: const Locale("tr", "TR"), // Türkçe dil ayarı // Türkçe dil ayarı
+      locale: const Locale("tr", "TR"),
     );
     if (pickedDate != null) {
       setState(() {
@@ -88,13 +90,90 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     }
   }
 
-  bool _validateAndSave() {
-    final form = _formKey.currentState;
-    if (form!.validate()) {
-      form.save();
-      return true;
+//   Future<void> registerUser(String name, String surname, String email, String password) async {
+  
+//   final url = Uri.parse('https://fintechprojectapiapi20240711020738.azurewebsites.net/api/UsersContoller/CreateUser'); // API endpoint'unuzu buraya ekleyin
+//   print('URL: $url');
+//   print('Name: $name, Surname: $surname, Email: $email, Password: $password');
+  
+//   try {
+//     final response = await http.post(
+//       url,
+//       headers: <String, String>{
+//         'Content-Type': 'application/json; charset=UTF-8',
+//       },
+//       body: jsonEncode(<String, String>{
+//         'nameSurname': name,
+//         'username': surname,
+//         'email': email,
+//         'password': password,
+//         'passwordConfirm': password,
+//       }),
+//     );
+    
+//     print('Response status: ${response.statusCode}');
+    
+//     if (response.statusCode == 200) {
+//       // If the server returns a 200 OK response, parse the JSON.
+//       final Map<String, dynamic> responseData = json.decode(response.body);
+//       // Handle successful registration (e.g., show success message, navigate to login page)
+//       print('Registration successful: $responseData');
+//       // Örneğin başarılı bir kayıt sonrası kullanıcıya bir bildirim gösterebilirsiniz
+      
+//       // Örneğin, giriş sayfasına yönlendirebilirsiniz:
+//       Navigator.push(
+//         context,
+//         MaterialPageRoute(builder: (context) => const MyLoginPage()),
+//       );
+//     } else {
+//       // If the server returns an error, throw an exception.
+//       print('Failed to register: ${response.body}');
+//       setState(() {
+//         // Update UI to reflect registration failure
+//       });
+//     }
+//   } catch (e) {
+//     print('Exception occurred: $e');
+//     setState(() {
+//       // Update UI to reflect an error occurred
+//     });
+//   }
+// }
+
+Future<void> _registerUser() async {
+    final url = Uri.parse('https://fintechprojectapiapi20240711020738.azurewebsites.net/api/UsersContoller/CreateUser'); // Replace with your API endpoint
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'nameSurname': _firstNameController.text,
+          'username': _lastNameController.text,
+          'email': _emailController.text,
+          'password': _passwordController.text,
+          'passwordConfirm': _confirmPasswordController.text,
+        }),
+      );
+      print('Response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print('Registration successful: $responseData');
+        // Handle successful registration (e.g., navigate to login page)
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MyLoginPage()),
+        );
+      } else {
+        print('Failed to register: ${response.body}');
+        // Handle registration failure (e.g., show error message)
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+      // Handle exception (e.g., show error message)
     }
-    return false;
   }
 
   @override
@@ -134,26 +213,28 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                       topRight: Radius.circular(30),
                     ),
                   ),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.fromLTRB(
-                          size.width * 0.23,
-                          size.height * 0.02,
-                          size.width * 0.23,
-                          size.height * 0.03,
-                        ),
-                        alignment: Alignment.topCenter,
-                        child: Text(
-                          'Kayıt Ol',
-                          style: TextStyle(
-                            fontFamily: "Lexend",
-                            fontSize: size.width * 0.09,
-                            fontWeight: FontWeight.bold,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                            size.width * 0.23,
+                            size.height * 0.02,
+                            size.width * 0.23,
+                            size.height * 0.03,
+                          ),
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            'Kayıt Ol',
+                            style: TextStyle(
+                              fontFamily: "Lexend",
+                              fontSize: size.width * 0.09,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      Container(
+                        Container(
                           padding: EdgeInsets.fromLTRB(
                             size.width * 0.013,
                             size.height * 0,
@@ -196,8 +277,9 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                                 ),
                               )
                             ],
-                          )),
-                      Container(
+                          ),
+                        ),
+                        Container(
                           padding: EdgeInsets.fromLTRB(
                             size.width * 0.02,
                             size.height * 0,
@@ -218,6 +300,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                                   ),
                                 ),
                                 child: TextField(
+                                  controller: _firstNameController,
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.fromLTRB(
                                       size.width * 0.02,
@@ -246,6 +329,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                                   ),
                                 ),
                                 child: TextField(
+                                  controller: _lastNameController,
                                   decoration: InputDecoration(
                                     contentPadding: EdgeInsets.fromLTRB(
                                       size.width * 0.02,
@@ -263,361 +347,363 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                                 ),
                               ),
                             ],
-                          )),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(
-                          size.width * 0.02,
-                          size.height * 0.0008,
-                          size.width * 0.04,
-                          size.height * 0,
-                        ),
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          'E-MAIL',
-                          style: TextStyle(
-                              fontSize: size.width * 0.03,
-                              fontFamily: "Lexend",
-                              letterSpacing: 2),
-                        ),
-                      ),
-                      Container(
-                        child: Container(
-                          height: size.height * 0.04,
-                          width: size.width * 0.9,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 0.1, color: Colors.black),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(25),
-                            ),
                           ),
-                          child: TextField(
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.fromLTRB(
-                                size.width * 0.02,
-                                0,
-                                size.width * 0.02,
-                                size.height * 0.022,
-                              ),
-                              hintText: "E-Mail",
-                              hintStyle: TextStyle(
-                                color: Colors.grey[400],
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                            size.width * 0.02,
+                            size.height * 0.0008,
+                            size.width * 0.04,
+                            size.height * 0,
+                          ),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'E-MAIL',
+                            style: TextStyle(
                                 fontSize: size.width * 0.03,
-                              ),
-                              border: InputBorder.none,
-                            ),
+                                fontFamily: "Lexend",
+                                letterSpacing: 2),
                           ),
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(
-                          size.width * 0.02,
-                          size.height * 0.008,
-                          size.width * 0.04,
-                          size.height * 0,
-                        ),
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          'DOĞUM TARİHİ',
-                          style: TextStyle(
-                              fontSize: size.width * 0.03,
-                              fontFamily: "Lexend",
-                              letterSpacing: 2),
-                        ),
-                      ),
-                      Container(
-                        child: Container(
-                          height: size.height * 0.04,
-                          width: size.width * 0.9,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 0.1, color: Colors.black),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(25),
+                        Container(
+                          child: Container(
+                            height: size.height * 0.04,
+                            width: size.width * 0.9,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(width: 0.1, color: Colors.black),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
+                              ),
                             ),
-                          ),
-                          child: TextField(
-                            controller: _dobController,
-                            readOnly: true,
-                            onTap: () => _selectDate(context),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.fromLTRB(
-                                size.width * 0.02,
-                                0,
-                                size.width * 0.02,
-                                size.height * 0.022,
-                              ),
-                              hintText: "Doğum Tarihi",
-                              hintStyle: TextStyle(
-                                color: Colors.grey[400],
-                                fontSize: size.width * 0.03,
-                              ),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(
-                          size.width * 0.02,
-                          size.height * 0.008,
-                          size.width * 0.04,
-                          size.height * 0,
-                        ),
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          'ŞİFRE',
-                          style: TextStyle(
-                              fontSize: size.width * 0.03,
-                              fontFamily: "Lexend",
-                              letterSpacing: 2),
-                        ),
-                      ),
-                      Container(
-                        child: Container(
-                          height: size.height * 0.04,
-                          width: size.width * 0.9,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 0.1, color: Colors.black),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(25),
-                            ),
-                          ),
-                          child: TextField(
-                            controller: _passwordController,
-                            obscureText: !_isPasswordVisible,
-                            onChanged: _validatePassword,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.fromLTRB(
-                                size.width * 0.02,
-                                0,
-                                size.width * 0.02,
-                                size.height * 0.022,
-                              ),
-                              hintText: "Şifre",
-                              hintStyle: TextStyle(
-                                color: Colors.grey[400],
-                                fontSize: size.width * 0.03,
-                              ),
-                              border: InputBorder.none,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isPasswordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
+                            child: TextField(
+                              controller: _emailController,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.fromLTRB(
+                                  size.width * 0.02,
+                                  0,
+                                  size.width * 0.02,
+                                  size.height * 0.022,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isPasswordVisible = !_isPasswordVisible;
-                                  });
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(
-                          size.width * 0.02,
-                          size.height * 0.008,
-                          size.width * 0.04,
-                          size.height * 0,
-                        ),
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          'ŞİFRE (TEKRAR)',
-                          style: TextStyle(
-                              fontSize: size.width * 0.03,
-                              fontFamily: "Lexend",
-                              letterSpacing: 2),
-                        ),
-                      ),
-                      Container(
-                        child: Container(
-                          height: size.height * 0.04,
-                          width: size.width * 0.9,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 0.1, color: Colors.black),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(25),
-                            ),
-                          ),
-                          child: TextField(
-                            controller: _confirmPasswordController,
-                            obscureText: !_isConfirmPasswordVisible,
-                            onChanged: (value) =>
-                                _validatePassword(_passwordController.text),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.fromLTRB(
-                                size.width * 0.02,
-                                0,
-                                size.width * 0.02,
-                                size.height * 0.022,
-                              ),
-                              hintText: "Şifre (Tekrar)",
-                              hintStyle: TextStyle(
-                                color: Colors.grey[400],
-                                fontSize: size.width * 0.03,
-                              ),
-                              border: InputBorder.none,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _isConfirmPasswordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
+                                hintText: "E-Mail",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: size.width * 0.03,
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    _isConfirmPasswordVisible =
-                                        !_isConfirmPasswordVisible;
-                                  });
-                                },
+                                border: InputBorder.none,
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: size.height * 0.001),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                            size.width * 0.02,
+                            size.height * 0.008,
+                            size.width * 0.04,
+                            size.height * 0,
+                          ),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'DOĞUM TARİHİ',
+                            style: TextStyle(
+                                fontSize: size.width * 0.03,
+                                fontFamily: "Lexend",
+                                letterSpacing: 2),
+                          ),
+                        ),
+                        Container(
+                          child: Container(
+                            height: size.height * 0.04,
+                            width: size.width * 0.9,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(width: 0.1, color: Colors.black),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
+                              ),
+                            ),
+                            child: TextField(
+                              controller: _dobController,
+                              readOnly: true,
+                              onTap: () => _selectDate(context),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.fromLTRB(
+                                  size.width * 0.02,
+                                  0,
+                                  size.width * 0.02,
+                                  size.height * 0.022,
+                                ),
+                                hintText: "Doğum Tarihi",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: size.width * 0.03,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                            size.width * 0.02,
+                            size.height * 0.008,
+                            size.width * 0.04,
+                            size.height * 0,
+                          ),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'ŞİFRE',
+                            style: TextStyle(
+                                fontSize: size.width * 0.03,
+                                fontFamily: "Lexend",
+                                letterSpacing: 2),
+                          ),
+                        ),
+                        Container(
+                          child: Container(
+                            height: size.height * 0.04,
+                            width: size.width * 0.9,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(width: 0.1, color: Colors.black),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
+                              ),
+                            ),
+                            child: TextField(
+                              controller: _passwordController,
+                              obscureText: !_isPasswordVisible,
+                              onChanged: _validatePassword,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.fromLTRB(
+                                  size.width * 0.02,
+                                  0,
+                                  size.width * 0.02,
+                                  size.height * 0.022,
+                                ),
+                                hintText: "Şifre",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: size.width * 0.03,
+                                ),
+                                border: InputBorder.none,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isPasswordVisible =
+                                          !_isPasswordVisible;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(
+                            size.width * 0.02,
+                            size.height * 0.008,
+                            size.width * 0.04,
+                            size.height * 0,
+                          ),
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'ŞİFRE (TEKRAR)',
+                            style: TextStyle(
+                                fontSize: size.width * 0.03,
+                                fontFamily: "Lexend",
+                                letterSpacing: 2),
+                          ),
+                        ),
+                        Container(
+                          child: Container(
+                            height: size.height * 0.04,
+                            width: size.width * 0.9,
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(width: 0.1, color: Colors.black),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(25),
+                              ),
+                            ),
+                            child: TextField(
+                              controller: _confirmPasswordController,
+                              obscureText: !_isConfirmPasswordVisible,
+                              onChanged: (value) =>
+                                  _validatePassword(_passwordController.text),
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.fromLTRB(
+                                  size.width * 0.02,
+                                  0,
+                                  size.width * 0.02,
+                                  size.height * 0.022,
+                                ),
+                                hintText: "Şifre (Tekrar)",
+                                hintStyle: TextStyle(
+                                  color: Colors.grey[400],
+                                  fontSize: size.width * 0.03,
+                                ),
+                                border: InputBorder.none,
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _isConfirmPasswordVisible
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _isConfirmPasswordVisible =
+                                          !_isConfirmPasswordVisible;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: size.height * 0.001),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  _getValidationIcon(_isLengthValid),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'En az 8 karakter olmalı',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: 'Lexend',
+                                      color: _isLengthValid
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  _getValidationIcon(_hasUppercase),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'En az bir büyük harf olmalı',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: 'Lexend',
+                                      color: _hasUppercase
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  _getValidationIcon(_hasLowercase),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'En az bir küçük harf olmalı',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: 'Lexend',
+                                      color: _hasLowercase
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  _getValidationIcon(_doPasswordsMatch),
+                                  SizedBox(width: 5),
+                                  Text(
+                                    'Şifreler aynı olmalı',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontFamily: 'Lexend',
+                                      color: _doPasswordsMatch
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 16.0),
+                        Container(
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStatePropertyAll(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(70),
+                                  ),
+                                ),
+                              ),
+                              fixedSize: MaterialStateProperty.all(
+                                Size(size.width * 0.6, size.height * 0.07),
+                              ),
+                              foregroundColor:
+                                  const MaterialStatePropertyAll(Color(0xffF4F4F4)),
+                              backgroundColor:
+                                  const MaterialStatePropertyAll(Color(0xff39B54A)),
+                            ),
+                            onPressed: (){_registerUser();},
+                            child: Text(
+                              'Kayıt Ol',
+                              style: TextStyle(
+                                fontSize: size.width * 0.05,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Row(
                           children: [
-                            Row(
-                              children: [
-                                _getValidationIcon(_isLengthValid),
-                                SizedBox(width: 5),
-                                Text(
-                                  'En az 8 karakter olmalı',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontFamily: 'Lexend',
-                                    color: _isLengthValid
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
-                                ),
-                              ],
+                            Container(
+                              padding: EdgeInsets.fromLTRB(
+                                size.width * 0.1,
+                                size.height * 0.008,
+                                size.width * 0.03,
+                                size.height * 0.003,
+                              ),
+                              child: Text(
+                                'Zaten hesabın var mı?',
+                                style: TextStyle(fontSize: size.width * 0.045),
+                              ),
                             ),
-                            Row(
-                              children: [
-                                _getValidationIcon(_hasUppercase),
-                                SizedBox(width: 5),
-                                Text(
-                                  'En az bir büyük harf olmalı',
+                            Container(
+                              child: GestureDetector(
+                                child: Text(
+                                  'Giriş Yap',
                                   style: TextStyle(
-                                    fontSize: 11,
-                                    fontFamily: 'Lexend',
-                                    color: _hasUppercase
-                                        ? Colors.green
-                                        : Colors.red,
+                                    fontSize: size.width * 0.042,
+                                    fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                _getValidationIcon(_hasLowercase),
-                                SizedBox(width: 5),
-                                Text(
-                                  'En az bir küçük harf olmalı',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontFamily: 'Lexend',
-                                    color: _hasLowercase
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                _getValidationIcon(_doPasswordsMatch),
-                                SizedBox(width: 5),
-                                Text(
-                                  'Şifreler aynı olmalı',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontFamily: 'Lexend',
-                                    color: _doPasswordsMatch
-                                        ? Colors.green
-                                        : Colors.red,
-                                  ),
-                                ),
-                              ],
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const MyLoginPage(),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      Container(
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            shape: MaterialStatePropertyAll(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(70),
-                                ),
-                              ),
-                            ),
-                            fixedSize: MaterialStateProperty.all(
-                              Size(size.width * 0.6, size.height * 0.07),
-                            ),
-                            foregroundColor: const MaterialStatePropertyAll(
-                                Color(0xffF4F4F4)),
-                            backgroundColor: const MaterialStatePropertyAll(
-                                Color(0xff39B54A)),
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const MyLoginPage()),
-                            );
-                          },
-                          child: Text(
-                            'Kayıt Ol',
-                            style: TextStyle(
-                              fontSize: size.width * 0.05,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.fromLTRB(
-                              size.width * 0.1,
-                              size.height * 0.008,
-                              size.width * 0.03,
-                              size.height * 0.003,
-                            ),
-                            child: Text(
-                              'Zaten hesabın var mı?',
-                              style: TextStyle(fontSize: size.width * 0.045),
-                            ),
-                          ),
-                          Container(
-                            child: GestureDetector(
-                              child: Text(
-                                'Giriş Yap',
-                                style: TextStyle(
-                                  fontSize: size.width * 0.042,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const MyLoginPage()),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],

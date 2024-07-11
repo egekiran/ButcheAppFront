@@ -5,6 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../pages/forget_password.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -232,10 +234,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                               _emailController.text,
                               _passwordController.text,
                             );
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const HomePage()),
-                            );
                           },
                           child: Text(
                             'Giriş Yap',
@@ -286,31 +284,49 @@ class _MyLoginPageState extends State<MyLoginPage> {
       ),
     );
   }
-  Future<void> loginUser(String email, String password) async {
-  final url = Uri.parse('https://your-api-endpoint.com/login'); // replace with your API endpoint
-  final response = await http.post(
-    url,
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: jsonEncode(<String, String>{
-      'email': email,
-      'password': password,
-    }),
-  );
-
-  if (response.statusCode == 200) {
-    // If the server returns a 200 OK response, parse the JSON.
-    final Map<String, dynamic> responseData = json.decode(response.body);
-    // Handle successful login (e.g., navigate to home page)
-    print('Login successful: ${responseData['token']}');
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const HomePage()),
+Future<void> loginUser(String email, String password) async {
+  final storage = FlutterSecureStorage();
+  final url = Uri.parse('https://fintechprojectapiapi20240711020738.azurewebsites.net/api/Auth/Login'); // replace with your API endpoint
+  print('URL: $url');
+  print('Email: $email, Password: $password');
+  try {
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'UserNameOrEmail': email,
+        'password': password,
+      }),
     );
-  } else {
-    // If the server returns an error, throw an exception.
-    print('Failed to login: ${response.body}');
+    print('Response status: ${response.statusCode}');
+    
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response, parse the JSON.
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      // Handle successful login (e.g., navigate to home page)
+      print('Login successful: ${responseData['token']}');
+      await storage.write(key: 'accessToken', value: responseData['token']['accessToken']);
+      print('Kullanıcı girişi başarıyla sağlanmıştır');
+      var ol = await storage.read(key: 'accessToken');
+      print('${ol} oldu muuuuuuuu');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } else {
+      // If the server returns an error, throw an exception.
+      print('Failed to login: ${response.body}');
+      setState(() {
+        // Update UI to reflect login failure
+      });
+    }
+  } catch (e) {
+    print('Exception occurred: $e');
+    setState(() {
+      // Update UI to reflect an error occurred
+    });
   }
 }
 }
