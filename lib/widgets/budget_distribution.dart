@@ -71,7 +71,7 @@ class BudgetItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
         children: [
-          Icon(icon, size: 28, color: color),
+          Icon(icon, size: 34, color: color),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -79,7 +79,10 @@ class BudgetItem extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: 'Lexend',
+                      fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
                 LinearProgressIndicator(

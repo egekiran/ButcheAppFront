@@ -1,6 +1,6 @@
+import 'package:butche_app/pages/home_page.dart';
 import 'package:butche_app/pages/login_page.dart';
 import 'package:flutter/material.dart';
-import 'pages/home_page.dart';
 
 void main() {
   runApp(ButcheApp());
@@ -14,7 +14,7 @@ class ButcheApp extends StatelessWidget {
     return MaterialApp(
       title: 'butche',
       theme: ThemeData(
-        primarySwatch: Colors.purple,
+        primarySwatch: Colors.deepPurple,
       ),
       home: MyLoginPage(),
     );
