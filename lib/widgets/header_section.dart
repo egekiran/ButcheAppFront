@@ -12,9 +12,16 @@ class _HeaderSectionState extends State<HeaderSection> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 150,
-      decoration: BoxDecoration(
-        color: Colors.purple,
+      height: 160,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [
+            Color.fromARGB(255, 81, 45, 168),
+            Color.fromARGB(255, 103, 58, 183),
+          ],
+        ),
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
       ),
       padding: EdgeInsets.all(16),
@@ -23,7 +30,7 @@ class _HeaderSectionState extends State<HeaderSection> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(8, 16, 0, 0),
+            padding: EdgeInsets.fromLTRB(8, 26, 0, 0),
             alignment: Alignment.centerLeft,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,8 +41,9 @@ class _HeaderSectionState extends State<HeaderSection> {
                       'Merhaba, ',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24.0,
+                        fontSize: 20.0,
                         fontFamily: 'Lexend',
+                        fontWeight: FontWeight.w200,
                       ),
                     ),
                     Text(
@@ -62,7 +70,7 @@ class _HeaderSectionState extends State<HeaderSection> {
             ),
           ),
           Container(
-              padding: EdgeInsets.fromLTRB(0, 14, 16, 0),
+              padding: EdgeInsets.fromLTRB(0, 20, 16, 0),
               alignment: Alignment.centerRight,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,

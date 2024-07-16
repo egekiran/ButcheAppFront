@@ -16,7 +16,7 @@ class ButcheApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
       ),
-      home: MyLoginPage(),
+      home: HomePage(),
     );
   }
 }
