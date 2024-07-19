@@ -3,7 +3,6 @@ import '../pages/login_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 
 void main() {
@@ -47,7 +46,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
   final TextEditingController _dobController = TextEditingController();
 
   bool _isLengthValid = false;
@@ -90,58 +90,10 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     }
   }
 
-//   Future<void> registerUser(String name, String surname, String email, String password) async {
-  
-//   final url = Uri.parse('https://fintechprojectapiapi20240711020738.azurewebsites.net/api/UsersContoller/CreateUser'); // API endpoint'unuzu buraya ekleyin
-//   print('URL: $url');
-//   print('Name: $name, Surname: $surname, Email: $email, Password: $password');
-  
-//   try {
-//     final response = await http.post(
-//       url,
-//       headers: <String, String>{
-//         'Content-Type': 'application/json; charset=UTF-8',
-//       },
-//       body: jsonEncode(<String, String>{
-//         'nameSurname': name,
-//         'username': surname,
-//         'email': email,
-//         'password': password,
-//         'passwordConfirm': password,
-//       }),
-//     );
-    
-//     print('Response status: ${response.statusCode}');
-    
-//     if (response.statusCode == 200) {
-//       // If the server returns a 200 OK response, parse the JSON.
-//       final Map<String, dynamic> responseData = json.decode(response.body);
-//       // Handle successful registration (e.g., show success message, navigate to login page)
-//       print('Registration successful: $responseData');
-//       // Örneğin başarılı bir kayıt sonrası kullanıcıya bir bildirim gösterebilirsiniz
-      
-//       // Örneğin, giriş sayfasına yönlendirebilirsiniz:
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(builder: (context) => const MyLoginPage()),
-//       );
-//     } else {
-//       // If the server returns an error, throw an exception.
-//       print('Failed to register: ${response.body}');
-//       setState(() {
-//         // Update UI to reflect registration failure
-//       });
-//     }
-//   } catch (e) {
-//     print('Exception occurred: $e');
-//     setState(() {
-//       // Update UI to reflect an error occurred
-//     });
-//   }
-// }
-
-Future<void> _registerUser() async {
-    final url = Uri.parse('https://fintechprojectapiapi20240711020738.azurewebsites.net/api/UsersContoller/CreateUser'); // Replace with your API endpoint
+  Future<void> _registerUser() async {
+    const host = 'fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const path = 'api/UsersContoller/CreateUser';
+    final url = Uri.parse('$host$path');
     try {
       final response = await http.post(
         url,
@@ -161,18 +113,15 @@ Future<void> _registerUser() async {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         print('Registration successful: $responseData');
-        // Handle successful registration (e.g., navigate to login page)
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const MyLoginPage()),
         );
       } else {
         print('Failed to register: ${response.body}');
-        // Handle registration failure (e.g., show error message)
       }
     } catch (e) {
       print('Exception occurred: $e');
-      // Handle exception (e.g., show error message)
     }
   }
 
@@ -495,8 +444,7 @@ Future<void> _registerUser() async {
                                   ),
                                   onPressed: () {
                                     setState(() {
-                                      _isPasswordVisible =
-                                          !_isPasswordVisible;
+                                      _isPasswordVisible = !_isPasswordVisible;
                                     });
                                   },
                                 ),
@@ -652,12 +600,14 @@ Future<void> _registerUser() async {
                               fixedSize: MaterialStateProperty.all(
                                 Size(size.width * 0.6, size.height * 0.07),
                               ),
-                              foregroundColor:
-                                  const MaterialStatePropertyAll(Color(0xffF4F4F4)),
-                              backgroundColor:
-                                  const MaterialStatePropertyAll(Color(0xff39B54A)),
+                              foregroundColor: const MaterialStatePropertyAll(
+                                  Color(0xffF4F4F4)),
+                              backgroundColor: const MaterialStatePropertyAll(
+                                  Color(0xff39B54A)),
                             ),
-                            onPressed: (){_registerUser();},
+                            onPressed: () {
+                              _registerUser();
+                            },
                             child: Text(
                               'Kayıt Ol',
                               style: TextStyle(

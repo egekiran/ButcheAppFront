@@ -1,4 +1,3 @@
-import 'package:butche_app/pages/home_page.dart';
 import 'package:butche_app/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +13,11 @@ class ButcheApp extends StatelessWidget {
     return MaterialApp(
       title: 'butche',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.grey,
+        bottomNavigationBarTheme:
+            BottomNavigationBarThemeData(selectedItemColor: Colors.white),
       ),
-      home: HomePage(),
+      home: MyLoginPage(),
     );
   }
 }

@@ -1,10 +1,20 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../widgets/header_section.dart';
 import '../widgets/budget_distribution.dart';
 import '../widgets/transaction_list.dart';
 import 'login_page.dart';
+
+const String host =
+    'https://fintechprojectapiapi20240711020738.azurewebsites.net';
+const String incomeEndpoint = '$host/api/Transactions/CreateIncomeTransaction';
+const String expenseEndpoint =
+    '$host/api/Transactions/CreateExpenseTransaction';
+
+const String getCategoryEndpoint = '$host/api/Categories';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -41,6 +51,9 @@ class _HomePageState extends State<HomePage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
+        backgroundColor: Colors.grey[300],
+        indicatorColor: Colors.grey[400],
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         selectedIndex: _index,
         onDestinationSelected: (index) {
           setState(() {
@@ -54,7 +67,10 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Iconsax.chart_3),
             label: 'İstatistik',
           ),
-          NavigationDestination(icon: Icon(Iconsax.home), label: 'Ana Sayfa'),
+          NavigationDestination(
+            icon: Icon(Iconsax.home),
+            label: 'Ana Sayfa',
+          ),
           NavigationDestination(
               icon: Icon(Iconsax.profile_circle), label: 'Profil'),
         ],
@@ -64,10 +80,50 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomePageBody extends StatelessWidget {
+class HomePageBody extends StatefulWidget {
   const HomePageBody({
     super.key,
   });
+
+  @override
+  State<HomePageBody> createState() => _HomePageBodyState();
+}
+
+class _HomePageBodyState extends State<HomePageBody> {
+  List<Map<String, String>> _categories = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    final storage = const FlutterSecureStorage();
+    String? token = await storage.read(key: 'accessToken');
+
+    final response = await http.get(
+      Uri.parse(getCategoryEndpoint),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> categories = jsonDecode(response.body);
+      setState(() {
+        _categories = categories
+            .map((category) => {
+                  'id': category['id'].toString(),
+                  'name': category['name'].toString(),
+                })
+            .toList();
+      });
+    } else {
+      print('Error fetching categories: ${response.statusCode}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,19 +166,6 @@ class HomePageBody extends StatelessWidget {
                       ),
                     ),
                     TransactionList(),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                        child: Text(
-                          'Daha fazla göster',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: 'Lexend',
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
@@ -142,23 +185,99 @@ class AddTransactionDialog extends StatefulWidget {
 class _AddTransactionDialogState extends State<AddTransactionDialog> {
   final _formKey = GlobalKey<FormState>();
   String _transactionType = 'Gelir';
-  String _category = 'Yeme & İçme';
+  String? _categoryId;
   DateTime _selectedDate = DateTime.now();
+  final storage = const FlutterSecureStorage();
+  List<Map<String, String>> _categories = [];
 
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
-  void _submitForm() {
+  @override
+  void initState() {
+    super.initState();
+    _fetchCategories();
+  }
+
+  Future<void> _fetchCategories() async {
+    String? token = await storage.read(key: 'accessToken');
+
+    final response = await http.get(
+      Uri.parse(getCategoryEndpoint),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List<dynamic> categories = jsonDecode(response.body);
+      setState(() {
+        _categories = categories
+            .map((category) => {
+                  'id': category['id'].toString(),
+                  'name': category['name'].toString(),
+                })
+            .toList();
+        if (_categories.isNotEmpty) {
+          _categoryId = _categories[0]['id'];
+        }
+      });
+    } else {
+      print('Error fetching categories: ${response.statusCode}');
+    }
+  }
+
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      // Save the transaction
-      Navigator.of(context).pop();
+      final transactionData = {
+        'categoryId': _categoryId,
+        'description': _descriptionController.text,
+        'amount': double.tryParse(_amountController.text) ?? 0.0,
+        'transactionDate': _selectedDate.toIso8601String(),
+      };
+      String? token = await storage.read(key: 'accessToken');
+      String url =
+          _transactionType == 'Gelir' ? incomeEndpoint : expenseEndpoint;
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'bearer $token',
+        },
+        body: jsonEncode(transactionData),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.of(context).pop();
+      } else {
+        print('Transaction saving error: ${response.statusCode}');
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Hata'),
+            content: Text('İşlem kaydedilemedi. Lütfen tekrar deneyin.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Tamam'),
+              ),
+            ],
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Gelir/Gider Ekle'),
+      backgroundColor: Colors.grey[200],
+      title: Text(
+        'Gelir/Gider Ekle',
+        style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Lexend'),
+      ),
       content: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -202,22 +321,17 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                 },
               ),
               DropdownButtonFormField<String>(
-                value: _category,
+                value: _categoryId,
                 decoration: InputDecoration(labelText: 'Kategori'),
-                items: [
-                  'Yeme & İçme',
-                  'Giyim',
-                  'Eğlence',
-                  'Düzenli Ödemeler',
-                ].map((String value) {
+                items: _categories.map((category) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: category['id'],
+                    child: Text(category['name']!),
                   );
                 }).toList(),
                 onChanged: (newValue) {
                   setState(() {
-                    _category = newValue!;
+                    _categoryId = newValue;
                   });
                 },
               ),
@@ -242,7 +356,11 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         });
                       }
                     },
-                    child: Text('Tarih Seç'),
+                    child: Text(
+                      'Tarih Seç',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontFamily: 'Lexend'),
+                    ),
                   ),
                 ],
               ),
@@ -255,11 +373,20 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('İptal'),
+          child: Text(
+            'İptal',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontFamily: 'Lexend',
+                color: Colors.red),
+          ),
         ),
         ElevatedButton(
           onPressed: _submitForm,
-          child: Text('Kaydet'),
+          child: Text(
+            'Kaydet',
+            style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Lexend'),
+          ),
         ),
       ],
     );

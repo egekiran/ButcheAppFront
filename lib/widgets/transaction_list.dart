@@ -1,30 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
+import '../models/Transaction.dart';
 
-class TransactionList extends StatelessWidget {
-  TransactionList({super.key});
+class TransactionList extends StatefulWidget {
+  @override
+  _TransactionListState createState() => _TransactionListState();
+}
 
-  final List<Transaction> transactions = [
-    Transaction(
-        date: 'Bugün',
-        description: 'Starbucks',
-        amount: '-113.00₺',
-        isIncome: false),
-    Transaction(
-        date: 'Bugün',
-        description: 'Burger King',
-        amount: '-187.00₺',
-        isIncome: false),
-    Transaction(
-        date: 'Dün',
-        description: 'Harçlık',
-        amount: '+3000.00₺',
-        isIncome: true),
-    Transaction(
-        date: '09.06.2024',
-        description: 'Burger King',
-        amount: '-187.00₺',
-        isIncome: false),
-  ];
+class _TransactionListState extends State<TransactionList> {
+  final List<Transaction> _transactions = [];
+  final storage = FlutterSecureStorage();
+  bool _loading = true;
+  bool _showMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTransactions();
+  }
+
+  Future<void> _fetchTransactions() async {
+    final token = await storage.read(key: 'accessToken');
+    const host =
+        'https://fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const path = 'api/Transactions/GetAllTransaction';
+
+    try {
+      final response = await http.get(
+        Uri.parse('$host$path'),
+        headers: {
+          'Authorization': 'bearer $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          _transactions.clear();
+          _transactions
+              .addAll(data.map((json) => Transaction.fromJson(json)).toList());
+          _transactions.sort((a, b) => b.transactionDate
+              .compareTo(a.transactionDate)); // Tarihe göre sırala
+          _loading = false;
+        });
+      } else {
+        print('Transaction error: ${response.statusCode}, ${response.body}');
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Üzgünüz'),
+              content: Text('Verileri alırken bir hata oluştu.'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Tamam'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+    }
+  }
 
   void _showTransactionDetails(BuildContext context, Transaction transaction) {
     showDialog(
@@ -34,7 +79,9 @@ class TransactionList extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
               side: BorderSide(
-                color: transaction.isIncome ? Colors.green : Colors.red,
+                color: transaction.transactionType == 'Income'
+                    ? Colors.green
+                    : Colors.red,
                 width: 3,
               )),
           child: Padding(
@@ -52,17 +99,24 @@ class TransactionList extends StatelessWidget {
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  'Tarih: ${transaction.date}',
+                  'Kategori: ${transaction.category}',
                   style: TextStyle(fontFamily: 'Lexend'),
                 ),
                 SizedBox(height: 8.0),
                 Text(
-                  'Miktar: ${transaction.amount}',
+                  'Tarih: ${_formatTransactionDate(transaction.transactionDate)}',
+                  style: TextStyle(fontFamily: 'Lexend'),
+                ),
+                SizedBox(height: 8.0),
+                Text(
+                  'Miktar: ${transaction.amount}₺',
                   style: TextStyle(
                     fontFamily: 'Lexend',
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: transaction.isIncome ? Colors.green : Colors.red,
+                    color: transaction.transactionType == 'Income'
+                        ? Colors.green
+                        : Colors.red,
                   ),
                 ),
                 SizedBox(height: 16.0),
@@ -70,7 +124,7 @@ class TransactionList extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Silme işlemini burada gerçekleştirin
+                      // TO DO: Silme fonksiyonu eklenecek.
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
@@ -92,78 +146,105 @@ class TransactionList extends StatelessWidget {
     );
   }
 
+  String _formatTransactionDate(DateTime date) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+
+    if (date.isAtSameMomentAs(today)) {
+      return 'Bugün';
+    } else if (date.isAtSameMomentAs(yesterday)) {
+      return 'Dün';
+    } else {
+      return DateFormat('dd.MM.yyyy').format(date);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: transactions.map((transaction) {
-        return Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-          child: GestureDetector(
-            onTap: () => _showTransactionDetails(context, transaction),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  width: 3,
-                  color: transaction.isIncome ? Colors.green : Colors.red,
-                ),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              margin: EdgeInsets.symmetric(vertical: 8.0),
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          transaction.date,
-                          style: TextStyle(
-                              color: Colors.grey, fontFamily: 'Lexend'),
+    return _loading
+        ? Center(child: CircularProgressIndicator())
+        : Column(
+            children: [
+              ..._transactions
+                  .take(_showMore ? _transactions.length : 4)
+                  .map((transaction) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: GestureDetector(
+                    onTap: () => _showTransactionDetails(context, transaction),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          width: 3,
+                          color: transaction.transactionType == 'Income'
+                              ? Colors.green
+                              : Colors.red,
                         ),
-                        SizedBox(height: 4.0),
-                        Text(
-                          transaction.description,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Lexend'),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _formatTransactionDate(
+                                      transaction.transactionDate),
+                                  style: TextStyle(
+                                      color: Colors.grey, fontFamily: 'Lexend'),
+                                ),
+                                SizedBox(height: 4.0),
+                                Text(
+                                  transaction.description,
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Lexend'),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              '${transaction.amount}₺',
+                              style: TextStyle(
+                                color: transaction.transactionType == 'Income'
+                                    ? Colors.green
+                                    : Colors.red,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Lexend',
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    Text(
-                      transaction.amount,
-                      style: TextStyle(
-                        color: transaction.isIncome ? Colors.green : Colors.red,
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Lexend',
                       ),
                     ),
-                  ],
+                  ),
+                );
+              }).toList(),
+              if (_transactions.length > 4)
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _showMore = !_showMore;
+                    });
+                  },
+                  child: Text(
+                    _showMore ? 'Daha Az Göster' : 'Daha Fazla Göster',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: 'Lexend',
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
+            ],
+          );
   }
-}
-
-class Transaction {
-  final String date;
-  final String description;
-  final String amount;
-  final bool isIncome;
-
-  Transaction({
-    required this.date,
-    required this.description,
-    required this.amount,
-    required this.isIncome,
-  });
 }

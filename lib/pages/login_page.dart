@@ -6,7 +6,6 @@ import '../pages/forget_password.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
@@ -171,8 +170,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 ),
                               ),
                               Align(
-                                alignment: Alignment(
-                                    1, 0), // Yüksekliği ayarlamak için kullanın
+                                alignment: Alignment(1, 0),
                                 child: IconButton(
                                   icon: Icon(
                                     _obscureText
@@ -284,49 +282,70 @@ class _MyLoginPageState extends State<MyLoginPage> {
       ),
     );
   }
-Future<void> loginUser(String email, String password) async {
-  final storage = FlutterSecureStorage();
-  final url = Uri.parse('https://fintechprojectapiapi20240711020738.azurewebsites.net/api/Auth/Login'); // replace with your API endpoint
-  print('URL: $url');
-  print('Email: $email, Password: $password');
-  try {
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'UserNameOrEmail': email,
-        'password': password,
-      }),
-    );
-    print('Response status: ${response.statusCode}');
-    
-    if (response.statusCode == 200) {
-      // If the server returns a 200 OK response, parse the JSON.
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      // Handle successful login (e.g., navigate to home page)
-      print('Login successful: ${responseData['token']}');
-      await storage.write(key: 'accessToken', value: responseData['token']['accessToken']);
-      print('Kullanıcı girişi başarıyla sağlanmıştır');
-      var ol = await storage.read(key: 'accessToken');
-      print('${ol} oldu muuuuuuuu');
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
+
+  Future<void> loginUser(String email, String password) async {
+    final storage = FlutterSecureStorage();
+    const host =
+        'https://fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const path = 'api/Auth/Login';
+    final url = Uri.parse('$host$path');
+    print('URL: $url');
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'UserNameOrEmail': email,
+          'password': password,
+        }),
       );
-    } else {
-      // If the server returns an error, throw an exception.
-      print('Failed to login: ${response.body}');
-      setState(() {
-        // Update UI to reflect login failure
-      });
+      print('Response status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print('Login successful: ${responseData['token']}');
+        await storage.write(
+            key: 'accessToken', value: responseData['token']['accessToken']);
+        print('User login successfully completed! ');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      } else {
+        print('Failed to login: ${response.body}');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                'Bunun için üzgünüz!',
+                style: TextStyle(
+                  fontFamily: 'Lexend',
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: Text(
+                'Sistemsel bir hatadan dolayı giriş yapılamadı. Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.\nİnternet bağlantınızın olduğundan emin olun.',
+                style: TextStyle(fontFamily: 'Lexend', fontSize: 15),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Tamam'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        setState(() {});
+      }
+    } catch (e) {
+      print('Exception occurred: $e');
+      setState(() {});
     }
-  } catch (e) {
-    print('Exception occurred: $e');
-    setState(() {
-      // Update UI to reflect an error occurred
-    });
   }
-}
 }
