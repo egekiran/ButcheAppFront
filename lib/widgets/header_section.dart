@@ -75,20 +75,20 @@ class _HeaderSectionState extends State<HeaderSection> {
         ),
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
       ),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(8, 26, 0, 0),
+            padding: const EdgeInsets.fromLTRB(8, 26, 0, 0),
             alignment: Alignment.centerLeft,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
-                    Text(
+                    const Text(
                       'Merhaba, ',
                       style: TextStyle(
                         color: Colors.white,
@@ -99,7 +99,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                     ),
                     Text(
                       UserName,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
@@ -110,7 +110,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                 ),
                 AnimatedDigitWidget(
                   value: CurrentBalance,
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                     color: Colors.white,
                     fontSize: 32.0,
                     fontWeight: FontWeight.bold,
@@ -120,13 +120,13 @@ class _HeaderSectionState extends State<HeaderSection> {
                   separateSymbol: ".",
                   separateLength: 3,
                   decimalSeparator: ",",
-                  prefix: "\₺",
+                  prefix: "₺",
                 ),
               ],
             ),
           ),
           Container(
-            padding: EdgeInsets.fromLTRB(0, 20, 16, 0),
+            padding: const EdgeInsets.fromLTRB(0, 20, 16, 0),
             alignment: Alignment.centerRight,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -134,7 +134,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                 Container(
                   width: 130,
                   padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0),
@@ -142,7 +142,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                   child: Center(
                     child: AnimatedDigitWidget(
                       value: Income,
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         color: Colors.green,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -152,15 +152,15 @@ class _HeaderSectionState extends State<HeaderSection> {
                       separateSymbol: ".",
                       separateLength: 3,
                       decimalSeparator: ",",
-                      prefix: "\₺",
+                      prefix: "₺",
                     ),
                   ),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Container(
                   width: 130,
                   padding:
-                      EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0),
@@ -168,7 +168,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                   child: Center(
                     child: AnimatedDigitWidget(
                       value: Expense,
-                      textStyle: TextStyle(
+                      textStyle: const TextStyle(
                         color: Colors.red,
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -178,7 +178,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                       separateSymbol: ".",
                       separateLength: 3,
                       decimalSeparator: ",",
-                      prefix: "\₺",
+                      prefix: "₺",
                     ),
                   ),
                 ),

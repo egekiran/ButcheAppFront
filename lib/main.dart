@@ -2,7 +2,7 @@ import 'package:butche_app/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(ButcheApp());
+  runApp(const ButcheApp());
 }
 
 class ButcheApp extends StatelessWidget {
@@ -15,9 +15,9 @@ class ButcheApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.grey,
         bottomNavigationBarTheme:
-            BottomNavigationBarThemeData(selectedItemColor: Colors.white),
+            const BottomNavigationBarThemeData(selectedItemColor: Colors.white),
       ),
-      home: MyLoginPage(),
+      home: const MyLoginPage(),
     );
   }
 }

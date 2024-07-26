@@ -1,3 +1,6 @@
+import 'package:butche_app/pages/profile_details.dart';
+import 'package:butche_app/pages/profile_details.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:http/http.dart' as http;
@@ -26,9 +29,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _index = 1;
   List screens = [
-    MyLoginPage(),
-    HomePageBody(),
-    MyLoginPage(),
+    const MyLoginPage(),
+    const HomePageBody(),
+    const ProfileDetails(),
   ];
 
   void _showAddTransactionDialog() {
@@ -45,9 +48,9 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromARGB(255, 81, 45, 168),
+        backgroundColor: const Color.fromARGB(255, 81, 45, 168),
         onPressed: _showAddTransactionDialog,
-        child: Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
@@ -99,7 +102,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   Future<void> _fetchCategories() async {
-    final storage = const FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     String? token = await storage.read(key: 'accessToken');
 
     final response = await http.get(
@@ -129,18 +132,18 @@ class _HomePageBodyState extends State<HomePageBody> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        color: Color.fromARGB(255, 243, 243, 243),
+        color: const Color.fromARGB(255, 243, 243, 243),
         child: Column(
           children: [
-            HeaderSection(),
+            const HeaderSection(),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                       child: Text(
                         'Bütçe Dağılımı',
                         style: TextStyle(
@@ -150,12 +153,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                       child: BudgetDistributionSection(),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
                       child: Text(
                         'Geçmiş İşlemler',
                         style: TextStyle(
@@ -178,6 +181,8 @@ class _HomePageBodyState extends State<HomePageBody> {
 }
 
 class AddTransactionDialog extends StatefulWidget {
+  const AddTransactionDialog({super.key});
+
   @override
   _AddTransactionDialogState createState() => _AddTransactionDialogState();
 }
@@ -256,12 +261,12 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Hata'),
-            content: Text('İşlem kaydedilemedi. Lütfen tekrar deneyin.'),
+            title: const Text('Hata'),
+            content: const Text('İşlem kaydedilemedi. Lütfen tekrar deneyin.'),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text('Tamam'),
+                child: const Text('Tamam'),
               ),
             ],
           ),
@@ -274,7 +279,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Colors.grey[200],
-      title: Text(
+      title: const Text(
         'Gelir/Gider Ekle',
         style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Lexend'),
       ),
@@ -286,7 +291,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
             children: [
               DropdownButtonFormField<String>(
                 value: _transactionType,
-                decoration: InputDecoration(labelText: 'Türü'),
+                decoration: const InputDecoration(labelText: 'Türü'),
                 items: ['Gelir', 'Gider'].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -301,7 +306,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
               ),
               TextFormField(
                 controller: _amountController,
-                decoration: InputDecoration(labelText: 'Tutar'),
+                decoration: const InputDecoration(labelText: 'Tutar'),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -312,7 +317,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
               ),
               TextFormField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Açıklama'),
+                decoration: const InputDecoration(labelText: 'Açıklama'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Lütfen bir açıklama girin';
@@ -322,7 +327,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
               ),
               DropdownButtonFormField<String>(
                 value: _categoryId,
-                decoration: InputDecoration(labelText: 'Kategori'),
+                decoration: const InputDecoration(labelText: 'Kategori'),
                 items: _categories.map((category) {
                   return DropdownMenuItem<String>(
                     value: category['id'],
@@ -356,7 +361,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         });
                       }
                     },
-                    child: Text(
+                    child: const Text(
                       'Tarih Seç',
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontFamily: 'Lexend'),
@@ -373,7 +378,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text(
+          child: const Text(
             'İptal',
             style: TextStyle(
                 fontWeight: FontWeight.bold,
@@ -383,7 +388,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
         ),
         ElevatedButton(
           onPressed: _submitForm,
-          child: Text(
+          child: const Text(
             'Kaydet',
             style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Lexend'),
           ),

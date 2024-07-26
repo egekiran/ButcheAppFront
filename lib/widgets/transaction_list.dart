@@ -6,13 +6,15 @@ import 'package:intl/intl.dart';
 import '../models/Transaction.dart';
 
 class TransactionList extends StatefulWidget {
+  const TransactionList({super.key});
+
   @override
   _TransactionListState createState() => _TransactionListState();
 }
 
 class _TransactionListState extends State<TransactionList> {
   final List<Transaction> _transactions = [];
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
   bool _loading = true;
   bool _showMore = false;
 
@@ -52,11 +54,11 @@ class _TransactionListState extends State<TransactionList> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Üzgünüz'),
-              content: Text('Verileri alırken bir hata oluştu.'),
+              title: const Text('Üzgünüz'),
+              content: const Text('Verileri alırken bir hata oluştu.'),
               actions: <Widget>[
                 TextButton(
-                  child: Text('Tamam'),
+                  child: const Text('Tamam'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -92,22 +94,22 @@ class _TransactionListState extends State<TransactionList> {
               children: [
                 Text(
                   transaction.description,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Lexend'),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(
                   'Kategori: ${transaction.category}',
-                  style: TextStyle(fontFamily: 'Lexend'),
+                  style: const TextStyle(fontFamily: 'Lexend'),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(
                   'Tarih: ${_formatTransactionDate(transaction.transactionDate)}',
-                  style: TextStyle(fontFamily: 'Lexend'),
+                  style: const TextStyle(fontFamily: 'Lexend'),
                 ),
-                SizedBox(height: 8.0),
+                const SizedBox(height: 8.0),
                 Text(
                   'Miktar: ${transaction.amount}₺',
                   style: TextStyle(
@@ -119,7 +121,7 @@ class _TransactionListState extends State<TransactionList> {
                         : Colors.red,
                   ),
                 ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
@@ -132,7 +134,7 @@ class _TransactionListState extends State<TransactionList> {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
-                    child: Text(
+                    child: const Text(
                       'Sil',
                       style: TextStyle(fontFamily: 'Lexend'),
                     ),
@@ -163,7 +165,7 @@ class _TransactionListState extends State<TransactionList> {
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : Column(
             children: [
               ..._transactions
@@ -184,9 +186,9 @@ class _TransactionListState extends State<TransactionList> {
                         ),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Padding(
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -196,13 +198,13 @@ class _TransactionListState extends State<TransactionList> {
                                 Text(
                                   _formatTransactionDate(
                                       transaction.transactionDate),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.grey, fontFamily: 'Lexend'),
                                 ),
-                                SizedBox(height: 4.0),
+                                const SizedBox(height: 4.0),
                                 Text(
                                   transaction.description,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 18.0,
                                       fontWeight: FontWeight.bold,
@@ -227,7 +229,7 @@ class _TransactionListState extends State<TransactionList> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
               if (_transactions.length > 4)
                 TextButton(
                   onPressed: () {
@@ -237,7 +239,7 @@ class _TransactionListState extends State<TransactionList> {
                   },
                   child: Text(
                     _showMore ? 'Daha Az Göster' : 'Daha Fazla Göster',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18,
                       fontFamily: 'Lexend',
                       color: Colors.grey,

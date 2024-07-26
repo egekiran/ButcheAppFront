@@ -257,7 +257,7 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
                       Row(
                         children: [
                           _getValidationIcon(_isLengthValid),
-                          SizedBox(
+                          const SizedBox(
                               width: 4), // Decreased width for closer proximity
                           Text(
                             'En az 8 karakter olmalı',
@@ -271,7 +271,7 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
                       Row(
                         children: [
                           _getValidationIcon(_hasUppercase),
-                          SizedBox(
+                          const SizedBox(
                               width: 4), // Decreased width for closer proximity
                           Text(
                             'En az bir büyük harf olmalı',
@@ -285,7 +285,7 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
                       Row(
                         children: [
                           _getValidationIcon(_hasLowercase),
-                          SizedBox(
+                          const SizedBox(
                               width: 4), // Decreased width for closer proximity
                           Text(
                             'En az bir küçük harf olmalı',
@@ -299,7 +299,7 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
                       Row(
                         children: [
                           _getValidationIcon(_doPasswordsMatch),
-                          SizedBox(
+                          const SizedBox(
                               width: 4), // Decreased width for closer proximity
                           Text(
                             'Şifreler aynı olmalı',
@@ -317,20 +317,20 @@ class _CreateNewPasswordState extends State<CreateNewPassword> {
                   Container(
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        shape: const MaterialStatePropertyAll(
+                        shape: const WidgetStatePropertyAll(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(70),
                             ),
                           ),
                         ),
-                        fixedSize: MaterialStateProperty.all(
+                        fixedSize: WidgetStateProperty.all(
                           Size(size.width * 0.6, size.height * 0.07),
                         ),
                         foregroundColor:
-                            const MaterialStatePropertyAll(Color(0xffF4F4F4)),
+                            const WidgetStatePropertyAll(Color(0xffF4F4F4)),
                         backgroundColor:
-                            const MaterialStatePropertyAll(Color(0xff39B54A)),
+                            const WidgetStatePropertyAll(Color(0xff39B54A)),
                       ),
                       onPressed: () {
                         //_validateAndSubmit();

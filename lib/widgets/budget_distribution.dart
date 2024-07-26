@@ -15,7 +15,7 @@ class _BudgetDistributionSectionState extends State<BudgetDistributionSection> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 10,
@@ -23,8 +23,8 @@ class _BudgetDistributionSectionState extends State<BudgetDistributionSection> {
           ),
         ],
       ),
-      padding: EdgeInsets.all(16),
-      child: Column(
+      padding: const EdgeInsets.all(16),
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           BudgetItem(
@@ -79,7 +79,7 @@ class BudgetItem extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 16,
                       fontFamily: 'Lexend',
                       fontWeight: FontWeight.bold),

@@ -18,12 +18,12 @@ class RegisterPage extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Lexend",
       ),
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale('tr', 'TR'), // Türkçe locale ekleyin
+      supportedLocales: const [
+        Locale('tr', 'TR'), // Türkçe locale ekleyin
       ],
       home: const MyRegisterPage(title: ''),
     );
@@ -130,7 +130,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Color(0xff350080),
+      backgroundColor: const Color(0xff350080),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -151,11 +151,11 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
             child: Column(
               children: <Widget>[
                 Container(
-                  alignment: Alignment(300, 50),
+                  alignment: const Alignment(300, 50),
                   padding: EdgeInsets.all(size.width * 0.04),
                   height: size.height * 0.75,
                   width: size.width * 1,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xffffffffff),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
@@ -244,7 +244,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                       width: 0.1, color: Colors.black),
-                                  borderRadius: BorderRadius.all(
+                                  borderRadius: const BorderRadius.all(
                                     Radius.circular(25),
                                   ),
                                 ),
@@ -267,13 +267,13 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                                 ),
                               ),
                               Container(
-                                margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                margin: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                                 height: size.height * 0.04,
                                 width: size.width * 0.4,
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                       width: 0.1, color: Colors.black),
-                                  borderRadius: BorderRadius.all(
+                                  borderRadius: const BorderRadius.all(
                                     Radius.circular(25),
                                   ),
                                 ),
@@ -321,7 +321,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                             decoration: BoxDecoration(
                               border:
                                   Border.all(width: 0.1, color: Colors.black),
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(25),
                               ),
                             ),
@@ -367,7 +367,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                             decoration: BoxDecoration(
                               border:
                                   Border.all(width: 0.1, color: Colors.black),
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(25),
                               ),
                             ),
@@ -415,7 +415,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                             decoration: BoxDecoration(
                               border:
                                   Border.all(width: 0.1, color: Colors.black),
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(25),
                               ),
                             ),
@@ -475,7 +475,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                             decoration: BoxDecoration(
                               border:
                                   Border.all(width: 0.1, color: Colors.black),
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(25),
                               ),
                             ),
@@ -522,7 +522,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                               Row(
                                 children: [
                                   _getValidationIcon(_isLengthValid),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     'En az 8 karakter olmalı',
                                     style: TextStyle(
@@ -538,7 +538,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                               Row(
                                 children: [
                                   _getValidationIcon(_hasUppercase),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     'En az bir büyük harf olmalı',
                                     style: TextStyle(
@@ -554,7 +554,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                               Row(
                                 children: [
                                   _getValidationIcon(_hasLowercase),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     'En az bir küçük harf olmalı',
                                     style: TextStyle(
@@ -570,7 +570,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                               Row(
                                 children: [
                                   _getValidationIcon(_doPasswordsMatch),
-                                  SizedBox(width: 5),
+                                  const SizedBox(width: 5),
                                   Text(
                                     'Şifreler aynı olmalı',
                                     style: TextStyle(
@@ -586,23 +586,23 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
                         Container(
                           child: ElevatedButton(
                             style: ButtonStyle(
-                              shape: MaterialStatePropertyAll(
+                              shape: const WidgetStatePropertyAll(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(70),
                                   ),
                                 ),
                               ),
-                              fixedSize: MaterialStateProperty.all(
+                              fixedSize: WidgetStateProperty.all(
                                 Size(size.width * 0.6, size.height * 0.07),
                               ),
-                              foregroundColor: const MaterialStatePropertyAll(
+                              foregroundColor: const WidgetStatePropertyAll(
                                   Color(0xffF4F4F4)),
-                              backgroundColor: const MaterialStatePropertyAll(
+                              backgroundColor: const WidgetStatePropertyAll(
                                   Color(0xff39B54A)),
                             ),
                             onPressed: () {

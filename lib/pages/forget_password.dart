@@ -143,7 +143,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                         width: size.width * 0.9,
                         decoration: BoxDecoration(
                           border: Border.all(width: 0.1, color: Colors.black),
-                          borderRadius: BorderRadius.all(
+                          borderRadius: const BorderRadius.all(
                             Radius.circular(25),
                           ),
                         ),
@@ -169,19 +169,19 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           width: size.width * 0.6, // Buton genişliği ayarlandı
                           child: ElevatedButton(
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
+                              shape: WidgetStateProperty.all(
                                 RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(70),
                                 ),
                               ),
-                              padding: MaterialStateProperty.all(
+                              padding: WidgetStateProperty.all(
                                 EdgeInsets.symmetric(
                                   vertical: size.height * 0.02,
                                 ),
                               ),
-                              foregroundColor: MaterialStateProperty.all(
+                              foregroundColor: WidgetStateProperty.all(
                                   const Color(0xffF4F4F4)),
-                              backgroundColor: MaterialStateProperty.all(
+                              backgroundColor: WidgetStateProperty.all(
                                   const Color(0xff39B54A)),
                             ),
                             onPressed: () {
@@ -210,7 +210,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Container(
-                                margin: EdgeInsets.only(right: 2.0),
+                                margin: const EdgeInsets.only(right: 2.0),
                                 child: Icon(
                                   Icons.chevron_left,
                                   size: size.width * 0.05,

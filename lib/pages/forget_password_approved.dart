@@ -40,16 +40,16 @@ class _ForgotPasswordApprovedState extends State<ForgotPasswordApproved> {
     final size = MediaQuery.of(context).size;
     
       return Scaffold(
-          backgroundColor: Color(0xff350080),
+          backgroundColor: const Color(0xff350080),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Container(
-                alignment: Alignment(300, 50),
+                alignment: const Alignment(300, 50),
                 padding: EdgeInsets.all(size.width * 0.04),
                 height: size.height * 0.87,
                 width: size.width * 1,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color(0xffffffffff),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(30),
@@ -59,10 +59,10 @@ class _ForgotPasswordApprovedState extends State<ForgotPasswordApproved> {
                      child: Column(
              children: [
                 Container(
-                  margin: EdgeInsets.only(right: 2.0), // İkonun sağında boşluk bırakır
+                  margin: const EdgeInsets.only(right: 2.0), // İkonun sağında boşluk bırakır
                   child: Transform.translate(
-                    offset: Offset(0, 20), // İkonu aşağı kaydırır
-                    child: Icon(
+                    offset: const Offset(0, 20), // İkonu aşağı kaydırır
+                    child: const Icon(
                       Icons.check, // Yeşil ok
                       color: Colors.green,
                       size: 74.0,
@@ -142,21 +142,21 @@ class _ForgotPasswordApprovedState extends State<ForgotPasswordApproved> {
                             Container(
                               child: ElevatedButton(
                                 style: ButtonStyle(
-                                  shape: MaterialStatePropertyAll(
-                                    RoundedRectangleBorder(
+                                  shape: WidgetStatePropertyAll(
+                                    const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(70),
                                       ),
                                     ),
                                   ),
-                                  fixedSize: MaterialStateProperty.all(
+                                  fixedSize: WidgetStateProperty.all(
                                     Size(size.width * 0.6, size.height * 0.07),
                                   ),
                                   foregroundColor:
-                                      const MaterialStatePropertyAll(
+                                      const WidgetStatePropertyAll(
                                           Color(0xffF4F4F4)),
                                   backgroundColor:
-                                      const MaterialStatePropertyAll(
+                                      const WidgetStatePropertyAll(
                                           Color(0xff39B54A)),
                                 ),
                                 onPressed: () {
@@ -184,7 +184,7 @@ class _ForgotPasswordApprovedState extends State<ForgotPasswordApproved> {
                               mainAxisSize: MainAxisSize.min, // İçeriği ortalamak için
                               children: [
                                 Container(
-                                  margin: EdgeInsets.only(right: 2.0), // İkonun sağında boşluk bırakır
+                                  margin: const EdgeInsets.only(right: 2.0), // İkonun sağında boşluk bırakır
                                   child: Icon(
                                   Icons.chevron_left, // Geri ok işareti
                                   size: size.width*0.05,

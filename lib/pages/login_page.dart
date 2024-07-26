@@ -26,7 +26,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     print(size.width);
     print(size.height);
     return Scaffold(
-      backgroundColor: Color(0xff350080),
+      backgroundColor: const Color(0xff350080),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -48,11 +48,11 @@ class _MyLoginPageState extends State<MyLoginPage> {
             child: Column(
               children: <Widget>[
                 Container(
-                  alignment: Alignment(300, 50),
+                  alignment: const Alignment(300, 50),
                   padding: EdgeInsets.all(size.width * 0.04),
                   height: size.height * 0.55,
                   width: size.width * 1,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     color: Color(0xffffffffff),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
@@ -100,7 +100,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           width: size.width * 0.9,
                           decoration: BoxDecoration(
                             border: Border.all(width: 0.1, color: Colors.black),
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(25),
                             ),
                           ),
@@ -145,7 +145,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           width: size.width * 0.9,
                           decoration: BoxDecoration(
                             border: Border.all(width: 0.1, color: Colors.black),
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(25),
                             ),
                           ),
@@ -170,7 +170,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                                 ),
                               ),
                               Align(
-                                alignment: Alignment(1, 0),
+                                alignment: const Alignment(1, 0),
                                 child: IconButton(
                                   icon: Icon(
                                     _obscureText
@@ -212,19 +212,19 @@ class _MyLoginPageState extends State<MyLoginPage> {
                       Container(
                         child: ElevatedButton(
                           style: ButtonStyle(
-                            shape: MaterialStatePropertyAll(
-                              RoundedRectangleBorder(
+                            shape: WidgetStatePropertyAll(
+                              const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(70),
                                 ),
                               ),
                             ),
-                            fixedSize: MaterialStateProperty.all(
+                            fixedSize: WidgetStateProperty.all(
                               Size(size.width * 0.6, size.height * 0.07),
                             ),
-                            foregroundColor: const MaterialStatePropertyAll(
+                            foregroundColor: const WidgetStatePropertyAll(
                                 Color(0xffF4F4F4)),
-                            backgroundColor: const MaterialStatePropertyAll(
+                            backgroundColor: const WidgetStatePropertyAll(
                                 Color(0xff39B54A)),
                           ),
                           onPressed: () {
@@ -284,7 +284,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
   Future<void> loginUser(String email, String password) async {
-    final storage = FlutterSecureStorage();
+    final storage = const FlutterSecureStorage();
     const host =
         'https://fintechprojectapiapi20240711020738.azurewebsites.net/';
     const path = 'api/Auth/Login';
@@ -319,20 +319,20 @@ class _MyLoginPageState extends State<MyLoginPage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text(
+              title: const Text(
                 'Bunun için üzgünüz!',
                 style: TextStyle(
                   fontFamily: 'Lexend',
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              content: Text(
+              content: const Text(
                 'Sistemsel bir hatadan dolayı giriş yapılamadı. Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.\nİnternet bağlantınızın olduğundan emin olun.',
                 style: TextStyle(fontFamily: 'Lexend', fontSize: 15),
               ),
               actions: <Widget>[
                 TextButton(
-                  child: Text('Tamam'),
+                  child: const Text('Tamam'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
