@@ -24,6 +24,55 @@ class _TransactionListState extends State<TransactionList> {
     _fetchTransactions();
   }
 
+  Future<void> _deleteTransaction(String transactionId) async {
+    final token = await storage.read(key: 'accessToken');
+    const host =
+        'https://fintechprojectapiapi20240711020738.azurewebsites.net/';
+    final path = 'api/Transactions/DeleteTransaction/$transactionId';
+
+    try {
+      final response = await http.delete(
+        Uri.parse('$host$path'),
+        headers: {
+          'Authorization': 'bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          _transactions.removeWhere((tx) => tx.transactionId == transactionId);
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transaction deleted successfully.')),
+        );
+        print('Transaction deleted successfully!');
+      } else {
+        print(
+            'Delete transaction error: ${response.statusCode}, ${response.body}');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Üzgünüz'),
+              content: const Text(
+                  'İşlemi silerken bir hata oluştu. Daha sonra tekrar deneyin.'),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Tamam'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (e) {
+      print('Exception occurred while deleting transaction: $e');
+    }
+  }
+
   Future<void> _fetchTransactions() async {
     final token = await storage.read(key: 'accessToken');
     const host =
@@ -126,7 +175,7 @@ class _TransactionListState extends State<TransactionList> {
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      // TO DO: Silme fonksiyonu eklenecek.
+                      _deleteTransaction(transaction.transactionId);
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(

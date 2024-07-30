@@ -1,4 +1,5 @@
 class Transaction {
+  final String transactionId;
   final double amount;
   final String description;
   final String category;
@@ -6,6 +7,7 @@ class Transaction {
   final DateTime transactionDate;
 
   Transaction({
+    required this.transactionId,
     required this.amount,
     required this.description,
     required this.category,
@@ -15,6 +17,7 @@ class Transaction {
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
+      transactionId: json['transactionId'],
       amount: json['amount'].toDouble(),
       description: json['description'],
       category: json['category'],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 
 class BudgetDistributionSection extends StatefulWidget {
   const BudgetDistributionSection({super.key});
@@ -15,7 +16,7 @@ class _BudgetDistributionSectionState extends State<BudgetDistributionSection> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
             color: Colors.black12,
             blurRadius: 10,
@@ -23,29 +24,33 @@ class _BudgetDistributionSectionState extends State<BudgetDistributionSection> {
           ),
         ],
       ),
-      padding: const EdgeInsets.all(16),
-      child: const Column(
+      padding: EdgeInsets.all(16),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: const [
           BudgetItem(
             icon: Icons.fastfood,
             label: 'Yeme & İçme',
             color: Colors.orange,
+            value: 43,
           ),
           BudgetItem(
             icon: Icons.checkroom,
             label: 'Giyim',
             color: Colors.purple,
+            value: 15,
           ),
           BudgetItem(
             icon: Icons.movie,
             label: 'Eğlence',
             color: Colors.blue,
+            value: 30,
           ),
           BudgetItem(
             icon: Icons.credit_card,
             label: 'Düzenli Ödemeler',
             color: Colors.green,
+            value: 12,
           ),
         ],
       ),
@@ -57,12 +62,14 @@ class BudgetItem extends StatelessWidget {
   final IconData icon;
   final String label;
   final Color color;
+  final double value;
 
   const BudgetItem({
     super.key,
     required this.icon,
     required this.label,
     required this.color,
+    required this.value,
   });
 
   @override
@@ -85,10 +92,14 @@ class BudgetItem extends StatelessWidget {
                       fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                LinearProgressIndicator(
-                  value: 0.6,
-                  color: color,
+                FAProgressBar(
+                  currentValue: value,
+                  displayText: null,
+                  progressColor: color,
                   backgroundColor: color.withOpacity(0.2),
+                  direction: Axis.horizontal,
+                  size: 10,
+                  animatedDuration: const Duration(milliseconds: 600),
                 ),
               ],
             ),

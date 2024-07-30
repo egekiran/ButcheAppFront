@@ -1,6 +1,4 @@
 import 'package:butche_app/pages/profile_details.dart';
-import 'package:butche_app/pages/profile_details.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../widgets/header_section.dart';
 import '../widgets/budget_distribution.dart';
 import '../widgets/transaction_list.dart';
-import 'login_page.dart';
+import 'statistics.dart';
 
 const String host =
     'https://fintechprojectapiapi20240711020738.azurewebsites.net';
@@ -29,7 +27,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _index = 1;
   List screens = [
-    const MyLoginPage(),
+    const StatisticsPage(),
     const HomePageBody(),
     const ProfileDetails(),
   ];
@@ -130,8 +128,8 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
+    return Scaffold(
+      body: Container(
         color: const Color.fromARGB(255, 243, 243, 243),
         child: Column(
           children: [
