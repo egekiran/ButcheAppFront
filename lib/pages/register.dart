@@ -197,7 +197,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                                 padding: EdgeInsets.fromLTRB(
                                   size.width * 0.01,
                                   size.height * 0,
-                                  size.width * 0.05,
+                                  size.width * 0.04,
                                   size.height * 0,
                                 ),
                                 alignment: Alignment.topLeft,

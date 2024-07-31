@@ -852,5 +852,6 @@ class _ProfileDetails extends State<ProfileDetails> {
         ),
       ),
     );
-  }
+  } 
 }
+
