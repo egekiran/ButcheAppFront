@@ -222,10 +222,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
                             fixedSize: WidgetStateProperty.all(
                               Size(size.width * 0.6, size.height * 0.07),
                             ),
-                            foregroundColor: const WidgetStatePropertyAll(
-                                Color(0xffF4F4F4)),
-                            backgroundColor: const WidgetStatePropertyAll(
-                                Color(0xff39B54A)),
+                            foregroundColor:
+                                const WidgetStatePropertyAll(Color(0xffF4F4F4)),
+                            backgroundColor:
+                                const WidgetStatePropertyAll(Color(0xff39B54A)),
                           ),
                           onPressed: () {
                             loginUser(
@@ -248,10 +248,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
                           size.height * 0.02,
                           size.width * 0.23,
                           size.height * 0.003,
-                        ),
-                        child: Text(
-                          'Hesabın yok mu?',
-                          style: TextStyle(fontSize: size.width * 0.05),
                         ),
                       ),
                       Container(

@@ -112,15 +112,24 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> categories = jsonDecode(response.body);
-      setState(() {
-        _categories = categories
-            .map((category) => {
-                  'id': category['id'].toString(),
-                  'name': category['name'].toString(),
-                })
-            .toList();
-      });
+      var jsonResponse = jsonDecode(response.body);
+      if (jsonResponse is Map<String, dynamic> &&
+          jsonResponse.containsKey('allCategories')) {
+        List<dynamic> categories = jsonResponse['allCategories'];
+        setState(() {
+          _categories = categories
+              .map((category) => {
+                    'id': category['id'].toString(),
+                    'name': category['name'].toString(),
+                    'type': category['type'].toString(),
+                  })
+              .toList();
+          print(jsonResponse);
+        });
+        print(categories);
+      } else {
+        print('Unexpected response format');
+      }
     } else {
       print('Error fetching categories: ${response.statusCode}');
     }
@@ -214,21 +223,41 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
     );
 
     if (response.statusCode == 200) {
-      List<dynamic> categories = jsonDecode(response.body);
-      setState(() {
-        _categories = categories
-            .map((category) => {
-                  'id': category['id'].toString(),
-                  'name': category['name'].toString(),
-                })
-            .toList();
-        if (_categories.isNotEmpty) {
-          _categoryId = _categories[0]['id'];
-        }
-      });
+      var jsonResponse = jsonDecode(response.body);
+      if (jsonResponse is Map<String, dynamic> &&
+          jsonResponse.containsKey('allCategories')) {
+        List<dynamic> categories = jsonResponse['allCategories'];
+        setState(() {
+          _categories = categories
+              .map((category) => {
+                    'id': category['id'].toString(),
+                    'name': category['name'].toString(),
+                    'type': category['type'].toString(),
+                  })
+              .toList();
+        });
+        print(_categories);
+      } else {
+        print('Unexpected response format');
+      }
     } else {
       print('Error fetching categories: ${response.statusCode}');
     }
+  }
+
+  List<Map<String, dynamic>> _getFilteredCategories() {
+    return _categories
+        .where((category) => _transactionType == 'Gelir'
+            ? category['type'] == 'Income'
+            : category['type'] == 'Expense')
+        .toList();
+  }
+
+  void _onTransactionTypeChanged(String? newValue) {
+    setState(() {
+      _transactionType = newValue ?? 'Gelir';
+      _categoryId = null; // Reset category when transaction type changes
+    });
   }
 
   void _submitForm() async {
@@ -296,9 +325,20 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     child: Text(value),
                   );
                 }).toList(),
+                onChanged: _onTransactionTypeChanged,
+              ),
+              DropdownButtonFormField<String>(
+                value: _categoryId,
+                decoration: const InputDecoration(labelText: 'Kategori'),
+                items: _getFilteredCategories().map((category) {
+                  return DropdownMenuItem<String>(
+                    value: category['id'],
+                    child: Text(category['name']),
+                  );
+                }).toList(),
                 onChanged: (newValue) {
                   setState(() {
-                    _transactionType = newValue!;
+                    _categoryId = newValue;
                   });
                 },
               ),
@@ -321,21 +361,6 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                     return 'Lütfen bir açıklama girin';
                   }
                   return null;
-                },
-              ),
-              DropdownButtonFormField<String>(
-                value: _categoryId,
-                decoration: const InputDecoration(labelText: 'Kategori'),
-                items: _categories.map((category) {
-                  return DropdownMenuItem<String>(
-                    value: category['id'],
-                    child: Text(category['name']!),
-                  );
-                }).toList(),
-                onChanged: (newValue) {
-                  setState(() {
-                    _categoryId = newValue;
-                  });
                 },
               ),
               Row(

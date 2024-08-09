@@ -91,7 +91,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   }
 
   Future<void> _registerUser() async {
-    const host = 'fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const host = 'http://fintechprojectapiapi20240711020738.azurewebsites.net/';
     const path = 'api/UsersContoller/CreateUser';
     final url = Uri.parse('$host$path');
     try {
@@ -352,45 +352,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
                             size.height * 0,
                           ),
                           alignment: Alignment.topLeft,
-                          child: Text(
-                            'DOĞUM TARİHİ',
-                            style: TextStyle(
-                                fontSize: size.width * 0.03,
-                                fontFamily: "Lexend",
-                                letterSpacing: 2),
-                          ),
-                        ),
-                        Container(
-                          child: Container(
-                            height: size.height * 0.04,
-                            width: size.width * 0.9,
-                            decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 0.1, color: Colors.black),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(25),
-                              ),
-                            ),
-                            child: TextField(
-                              controller: _dobController,
-                              readOnly: true,
-                              onTap: () => _selectDate(context),
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.fromLTRB(
-                                  size.width * 0.02,
-                                  0,
-                                  size.width * 0.02,
-                                  size.height * 0.022,
-                                ),
-                                hintText: "Doğum Tarihi",
-                                hintStyle: TextStyle(
-                                  color: Colors.grey[400],
-                                  fontSize: size.width * 0.03,
-                                ),
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
                         ),
                         Container(
                           padding: EdgeInsets.fromLTRB(
