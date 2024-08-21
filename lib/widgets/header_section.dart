@@ -24,8 +24,7 @@ class _HeaderSectionState extends State<HeaderSection> {
   }
 
   Future<void> _getCurrentBalance() async {
-    const host =
-        'https://fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const host = 'https://butchebackendapi.azurewebsites.net/';
     const path = 'api/Transactions/GetCurrentBalance';
 
     try {
@@ -43,10 +42,10 @@ class _HeaderSectionState extends State<HeaderSection> {
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body);
           setState(() {
-            UserName = data['userName'];
-            Income = data['income'];
-            Expense = data['expense'];
-            CurrentBalance = data['currentBalance'];
+            UserName = data['nameSurname'] ?? 'default';
+            Income = data['income'] ?? 0;
+            Expense = data['expense'] ?? 0;
+            CurrentBalance = data['currentBalance'] ?? 0;
           });
         } else {
           print('Failed to get current balance: ${response.statusCode}');
@@ -133,8 +132,8 @@ class _HeaderSectionState extends State<HeaderSection> {
               children: [
                 Container(
                   width: 130,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0),
@@ -159,8 +158,8 @@ class _HeaderSectionState extends State<HeaderSection> {
                 const SizedBox(height: 8.0),
                 Container(
                   width: 130,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10.0),

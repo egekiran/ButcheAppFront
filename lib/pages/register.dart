@@ -91,7 +91,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   }
 
   Future<void> _registerUser() async {
-    const host = 'http://fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const host = 'https://butchebackendapi.azurewebsites.net/';
     const path = 'api/UsersContoller/CreateUser';
     final url = Uri.parse('$host$path');
     try {
@@ -102,7 +102,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         },
         body: jsonEncode(<String, dynamic>{
           'nameSurname': _firstNameController.text,
-          'username': _lastNameController.text,
+          'userName': _lastNameController.text,
           'email': _emailController.text,
           'password': _passwordController.text,
           'passwordConfirm': _confirmPasswordController.text,

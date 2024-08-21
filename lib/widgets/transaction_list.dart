@@ -26,8 +26,7 @@ class _TransactionListState extends State<TransactionList> {
 
   Future<void> _deleteTransaction(String transactionId) async {
     final token = await storage.read(key: 'accessToken');
-    const host =
-        'https://fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const host = 'https://butchebackendapi.azurewebsites.net/';
     final path = 'api/Transactions/DeleteTransaction/$transactionId';
 
     try {
@@ -75,8 +74,7 @@ class _TransactionListState extends State<TransactionList> {
 
   Future<void> _fetchTransactions() async {
     final token = await storage.read(key: 'accessToken');
-    const host =
-        'https://fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const host = 'https://butchebackendapi.azurewebsites.net/';
     const path = 'api/Transactions/GetAllTransaction';
 
     try {

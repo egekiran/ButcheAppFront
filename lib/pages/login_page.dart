@@ -281,22 +281,23 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   Future<void> loginUser(String email, String password) async {
     final storage = const FlutterSecureStorage();
-    const host =
-        'https://fintechprojectapiapi20240711020738.azurewebsites.net/';
+    const host = 'https://butchebackendapi.azurewebsites.net/';
     const path = 'api/Auth/Login';
     final url = Uri.parse('$host$path');
     print('URL: $url');
     try {
-      final response = await http.post(
-        url,
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'UserNameOrEmail': email,
-          'password': password,
-        }),
-      );
+      final response = await http
+          .post(
+            url,
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              'userNameOrEmail': email,
+              'password': password,
+            }),
+          )
+          .timeout(const Duration(seconds: 15));
       print('Response status: ${response.statusCode}');
 
       if (response.statusCode == 200) {

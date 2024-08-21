@@ -9,8 +9,7 @@ import '../widgets/budget_distribution.dart';
 import '../widgets/transaction_list.dart';
 import 'statistics.dart';
 
-const String host =
-    'https://fintechprojectapiapi20240711020738.azurewebsites.net';
+const String host = 'https://butchebackendapi.azurewebsites.net';
 const String incomeEndpoint = '$host/api/Transactions/CreateIncomeTransaction';
 const String expenseEndpoint =
     '$host/api/Transactions/CreateExpenseTransaction';
